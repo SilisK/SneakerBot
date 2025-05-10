@@ -7,7 +7,7 @@ import validationHandler from '../helpers/validation-handler.js';
 const router = express.Router();
 
 // routers
-router.get('/', (req, res) => res.send('Welcome to the SneakerBot API'));
+router.get('/', (req, res) => res.send({ success: true, message: 'Welcome to the SneakerBot API' }));
 router.use('/addresses', addressesRoutes);
 router.use('/proxies', proxiesRoutes);
 router.use('/tasks', tasksRoutes);
