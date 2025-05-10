@@ -30,10 +30,28 @@ export const getAddress = async (req, res) => {
 
 export const getAddresses = async (req, res) => {
   try {
-    const addresses = await new Address().find(req.query);
+    let { page = 1, limit = 10, ...filters } = req.query;
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+    const offset = (page - 1) * limit;
 
+    const addressModel = new Address();
+
+    const [addresses, total] = await Promise.all([
+      addressModel.find({ ...filters, limit, offset }),
+      addressModel.count(filters)
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
     const message = `Addresses ${result(addresses.length)} found`;
-    return Ok(res, message, addresses);
+
+    return Ok(res, message, {
+      page,
+      limit,
+      total,
+      totalPages,
+      addresses: addresses
+    });
   } catch (err) {
     console.error(err.message);
     return InternalServerError(res, err.message);

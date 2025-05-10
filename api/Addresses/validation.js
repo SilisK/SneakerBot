@@ -24,8 +24,12 @@ export const findOne = {
 
 export const findAll = {
   query: Joi.object({
-    type: Joi.string().valid('billing', 'shipping').optional()
-  })
+    page: Joi.number().integer().min(1).optional(),
+    limit: Joi.number().integer().min(1).max(100).optional(),
+    type: Joi.string().valid('billing', 'shipping').optional(),
+    city: Joi.string().optional(),
+    country: Joi.string().optional(),
+  }),
 };
 
 export const update = {

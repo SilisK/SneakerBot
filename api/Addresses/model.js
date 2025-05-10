@@ -14,9 +14,24 @@ class AddressesModel {
   }
 
   async find(data) {
-    return knex(this.tableName)
-      .where({ is_deleted: false, ...data })
+    const { limit, offset, ...filters } = data;
+
+    const query = knex(this.tableName)
+      .where({ is_deleted: false, ...filters })
       .orderBy('created_at', 'desc');
+
+    if (limit) query.limit(parseInt(limit, 10));
+    if (offset) query.offset(parseInt(offset, 10));
+
+    return query;
+  }
+
+  async count(filters = {}) {
+    const [{ count }] = await knex(this.tableName)
+      .where({ is_deleted: false, ...filters })
+      .count('* as count');
+
+    return parseInt(count, 10);
   }
 
   async findOne(data) {
